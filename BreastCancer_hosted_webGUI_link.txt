@@ -6,6 +6,5 @@ ML Algorithm: Logistic Regression
 
 Persistence: Joblib
 
-Live URL: https://your-app-name.onrender.com
-
-GitHub Link: https://github.com/your-username/your-repo-name
+Live URL: https://breastcancer-project-lambertrhema.onrender.com/
+GitHub Link: https://github.com/Rhema-01/BreastCancer_Project_LambertRhema_22CG031880.git
