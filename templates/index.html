@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer AI Diagnostic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-pink: #fb7185; --dark-pink: #e11d48; }
+        body { background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 100%); font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .glass-card { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 8px 32px rgba(0,0,0,0.1); padding: 40px; width: 100%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: linear-gradient(90deg, #fb7185 0%, #e11d48 100%); color: white; padding: 15px; border: none; border-radius: 12px; width: 100%; font-weight: 600; cursor: pointer; margin-top: 15px; }
+        #res { margin-top: 25px; padding: 15px; border-radius: 12px; font-weight: 600; display: none; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1>🎗️ Cancer AI</h1>
+        <p>Enter mean values for analysis</p>
+        
+        <form id="calcForm">
+            <input type="number" step="any" id="f1" placeholder="Mean Radius" required>
+            <input type="number" step="any" id="f2" placeholder="Mean Texture" required>
+            <input type="number" step="any" id="f3" placeholder="Mean Perimeter" required>
+            <input type="number" step="any" id="f4" placeholder="Mean Area" required>
+            <input type="number" step="any" id="f5" placeholder="Mean Smoothness" required>
+            <button type="submit">Run AI Prediction</button>
+        </form>
+
+        <div id="res"></div>
+    </div>
+
+    <script>
+        document.getElementById('calcForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Stop page refresh
+            
+            const resultDiv = document.getElementById('res');
+            resultDiv.style.display = "block";
+            resultDiv.style.background = "#f3f4f6";
+            resultDiv.style.color = "#333";
+            resultDiv.innerText = "Analyzing data...";
+
+            // Gather inputs
+            const vals = [
+                parseFloat(document.getElementById('f1').value),
+                parseFloat(document.getElementById('f2').value),
+                parseFloat(document.getElementById('f3').value),
+                parseFloat(document.getElementById('f4').value),
+                parseFloat(document.getElementById('f5').value)
+            ];
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: vals })
+                });
+
+                const json = await response.json();
+                
+                if (json.prediction) {
+                    resultDiv.innerText = "Result: " + json.prediction;
+                    resultDiv.style.background = json.color;
+                    resultDiv.style.color = "white";
+                } else {
+                    resultDiv.innerText = "Error: " + json.error;
+                }
+            } catch (err) {
+                resultDiv.innerText = "Server Error. Check terminal.";
+            }
+        });
+    </script>
+</body>
+</html>
